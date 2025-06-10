@@ -25,9 +25,9 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader
 
 # Laravel setup
-RUN php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache
+#RUN php artisan config:cache && \
+ #   php artisan route:cache && \
+  #  php artisan view:cache
 
 # Change permission for storage and bootstrap
 RUN chmod -R 775 storage bootstrap/cache
