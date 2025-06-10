@@ -32,10 +32,10 @@ RUN composer install --no-dev --optimize-autoloader
 RUN chmod -R 775 storage bootstrap/cache
 
 # Laravel setup (safe caching with fallback)
-#RUN if [ -f artisan ]; then \
-#        php artisan config:clear && \
- #       php artisan config:cache || echo "config cache failed"; \
-  #  fi
+RUN if [ -f artisan ]; then \
+        php artisan config:clear && \
+        php artisan config:cache || echo "config cache failed"; \
+    fi
 
 #RUN if [ -f artisan ]; then \
  #       php artisan route:clear && \
