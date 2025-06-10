@@ -1,18 +1,9 @@
 FROM php:8.2-fpm
 
-# Install dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    locales \
-    zip \
-    jpegoptim optipng pngquant gifsicle \
-    vim unzip git curl libonig-dev libxml2-dev \
-    libzip-dev \
-    libpq-dev \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip
+    git curl zip unzip libzip-dev libpng-dev libonig-dev libxml2-dev libpq-dev \
+    && docker-php-ext-install pdo pdo_mysql zip
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -20,23 +11,19 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www
 
-# Copy existing application directory
+# Copy project files
 COPY . .
 
-# Install PHP dependencies
+# Install dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Laravel config
-RUN php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache
-
-# Permissions
-RUN chown -R www-data:www-data /var/www && chmod -R 755 /var/www
+# Laravel setup
+RUN php artisan config:cache \
+ && php artisan route:cache \
+ && php artisan view:cache
 
 # Expose port
 EXPOSE 8000
 
-# Start Laravel app
+# Start server
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
-
