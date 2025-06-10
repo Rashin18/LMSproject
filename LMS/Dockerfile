@@ -23,7 +23,7 @@ COPY . .
 
 # Install dependencies
 RUN composer install --no-dev --optimize-autoloader
-RUN php artisan migrate:fresh
+
 
 # Laravel setup
 RUN php artisan config:cache 
@@ -32,7 +32,7 @@ RUN php artisan config:cache
 
 # Change permission for storage and bootstrap
 RUN chmod -R 775 storage bootstrap/cache
-
+RUN php artisan migrate
 # Expose port
 EXPOSE 8000
 
