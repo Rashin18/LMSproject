@@ -31,17 +31,27 @@ RUN composer install --no-dev --optimize-autoloader
 # Set permissions
 RUN chmod -R 775 storage bootstrap/cache
 
-# Generate Laravel key if not exists
-RUN if [ ! -f .env ]; then \
-        cp .env.example .env && \
-        php artisan key:generate; \
+# Laravel setup (safe caching with fallback)
+RUN if [ -f artisan ]; then \
+        php artisan config:clear && \
+        php artisan config:cache || echo "config cache failed"; \
     fi
+
+RUN if [ -f artisan ]; then \
+        php artisan route:clear && \
+        php artisan route:cache || echo "route cache failed"; \
+    fi
+
+RUN if [ -f artisan ]; then \
+        php artisan view:clear && \
+        php artisan view:cache || echo "view cache failed"; \
+    fi
+
+# DO NOT run migrations during build; it's a runtime task (do it in console after deploy)
 
 # Expose port for Laravel
 EXPOSE 8000
 
 # Start Laravel development server
-CMD sh -c "php artisan config:clear && \
-           php artisan cache:clear && \
-           php artisan serve --host=0.0.0.0 --port=8000"
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
 
