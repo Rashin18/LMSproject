@@ -11,15 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('students', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('student_id')->unique();
-            $table->foreignId('batch_id')->constrained()->onDelete('cascade');
-            $table->enum('status', ['active', 'inactive', 'suspended'])->default('active');
-            $table->timestamps();
-        });
+          if (!Schema::hasTable('students')) {
+             Schema::create('students', function (Blueprint $table) {
+               $table->id();
+               $table->string('name');
+               $table->string('email');
+               $table->string('student_id');
+               $table->foreignId('batch_id')->constrained()->onDelete('cascade');
+               $table->enum('status', ['active', 'inactive', 'suspended'])->default('active');
+               $table->timestamps();
+           });
+        }
         
         // Pivot table for student-course relationship
         Schema::create('course_student', function (Blueprint $table) {
