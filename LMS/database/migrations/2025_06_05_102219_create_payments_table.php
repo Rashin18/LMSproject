@@ -4,32 +4,29 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreatePaymentsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
-        Schema::create('payments', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained();
-            $table->string('order_id');
-            $table->string('payment_id')->nullable();
-            //$table->unsignedInteger('amount');
-            $table->decimal('amount', 10, 2);  // in paise
-            $table->string('currency', 3)->default('INR');
-            $table->string('status'); // pending, completed, failed
-            $table->json('metadata')->nullable();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('payments')) {
+            Schema::create('payments', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('user_id');
+                $table->string('order_id');
+                $table->string('payment_id')->nullable();
+                $table->decimal('amount', 10, 2);
+                $table->string('currency')->default('INR');
+                $table->string('status');
+                $table->text('metadata')->nullable();
+                $table->timestamps();
+
+                $table->foreign('user_id')->references('id')->on('users');
+            });
+        }
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('payments');
     }
-};
+}
