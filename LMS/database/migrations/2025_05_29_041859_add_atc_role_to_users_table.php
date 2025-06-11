@@ -1,31 +1,31 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
+class AddAtcRoleToUsersTable extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up()
-{
-    Schema::table('users', function (Blueprint $table) {
-        $table->string('role')->default('student')->change(); // Update existing column
-    });
-    
-    // Or if you're using an enum column:
-    DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('superadmin','student', 'teacher', 'admin', 'atc') DEFAULT 'student'");
+    {
+        if (Schema::hasColumn('users', 'role')) {
+            // If you're using MySQL, use raw statement (conditionally)
+            if (env('DB_CONNECTION') === 'mysql') {
+                DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('superadmin','student', 'teacher', 'admin', 'atc') DEFAULT 'student'");
+            } else {
+                // SQLite workaround: SQLite does not support MODIFY
+                // You may have to create a new table and copy data if strict change is required
+                // Or skip this change in SQLite
+                logger('Skipping role enum change on SQLite due to lack of support.');
+            }
+        }
+    }
+
+    public function down()
+    {
+        if (env('DB_CONNECTION') === 'mysql') {
+            DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('superadmin','student', 'teacher', 'admin') DEFAULT 'student'");
+        }
+    }
 }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::table('users', function (Blueprint $table) {
-            //
-        });
-    }
-};
