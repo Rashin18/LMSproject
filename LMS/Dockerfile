@@ -45,6 +45,7 @@ RUN if [ -f artisan ]; then \
 RUN if [ -f artisan ]; then \
         php artisan view:clear && \
         php artisan view:cache || echo "view cache failed"; \
+    fi
 
 # DO NOT run migrations during build; it's a runtime task (do it in console after deploy)
 
