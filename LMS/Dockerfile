@@ -46,7 +46,7 @@ RUN if [ -f artisan ]; then \
         php artisan view:clear && \
         php artisan view:cache || echo "view cache failed"; \
     fi
-RUN php artisan migrate  ---force
+RUN php artisan migrate:fresh
 # DO NOT run migrations during build; it's a runtime task (do it in console after deploy)
 
 # Expose port for Laravel
