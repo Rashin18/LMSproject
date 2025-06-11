@@ -34,9 +34,7 @@ RUN chmod -R 775 storage bootstrap/cache
 # Laravel setup (safe caching with fallback)
 
 
-RUN  if [ -f artisan ]; then \
-         php artisan migrate ---force || echo " magration failed"; \
-     fi
+
 # DO NOT run migrations during build; it's a runtime task (do it in console after deploy)
 
 # Expose port for Laravel
