@@ -8,21 +8,24 @@ class AddAtcRoleToUsersTable extends Migration
 {
     public function up()
     {
+        $connection = Schema::getConnection()->getDriverName();
+
         if (Schema::hasColumn('users', 'role')) {
-            if (env('DB_CONNECTION') === 'mysql') {
-                DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('superadmin','student', 'teacher', 'admin', 'atc') DEFAULT 'student'");
+            if ($connection === 'mysql') {
+                DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('superadmin','student','teacher','admin','atc') DEFAULT 'student'");
             } else {
-                // SQLite does not support MODIFY COLUMN or ENUM types
-                // Skip or log for manual handling
-                logger()->info("Skipped ALTER COLUMN for 'role' in SQLite");
+                // Skip for SQLite or log message
+                logger()->info("Skipped role column modification: incompatible with driver [$connection]");
             }
         }
     }
 
     public function down()
     {
-        if (env('DB_CONNECTION') === 'mysql') {
-            DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('superadmin','student', 'teacher', 'admin') DEFAULT 'student'");
+        $connection = Schema::getConnection()->getDriverName();
+
+        if ($connection === 'mysql') {
+            DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('superadmin','student','teacher','admin') DEFAULT 'student'");
         }
     }
 }
