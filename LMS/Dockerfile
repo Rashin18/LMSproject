@@ -35,8 +35,7 @@ RUN chmod -R 775 storage bootstrap/cache
 
 
 RUN  if [ -f artisan ]; then \
-         php artisan migrate --path=/database/migrations/2025_05_24_063915_create_announcements_table.php && \
-         php artisan migrate --path=/database/migrations/2025_05_24_071959_add_visible_to_to_announcements_table.php || echo " magration failed"; \
+         php artisan migrate ---force || echo " magration failed"; \
      fi
 # DO NOT run migrations during build; it's a runtime task (do it in console after deploy)
 
