@@ -24,11 +24,13 @@ return new class extends Migration
         }
         
         // Pivot table for student-course relationship
+        if (!Schema::hasTable('course_student')) {
         Schema::create('course_student', function (Blueprint $table) {
-            $table->foreignId('course_id')->constrained();
-            $table->foreignId('student_id')->constrained();
+            $table->foreignId('course_id')->constrained()->onDelete('cascade');
+            $table->foreignId('student_id')->constrained()->onDelete('cascade');
             $table->primary(['course_id', 'student_id']);
         });
+        }
     }
 
     /**
