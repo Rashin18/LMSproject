@@ -54,4 +54,4 @@ EXPOSE 8000
 # Start Laravel development server
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
 
-RUN php artisan migrate:fresh
+
