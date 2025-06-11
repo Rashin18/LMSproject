@@ -46,7 +46,11 @@ RUN chmod -R 775 storage bootstrap/cache
  #       php artisan view:clear && \
   #      php artisan view:cache || echo "view cache failed"; \
    # fi
-
+RUN php artisan config:clear
+RUN php artisan cache:clear
+RUN php artisan route:clear
+RUN php artisan view:clear
+RUN php artisan config:cache
 # DO NOT run migrations during build; it's a runtime task (do it in console after deploy)
 
 # Expose port for Laravel
