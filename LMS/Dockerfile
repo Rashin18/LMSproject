@@ -51,7 +51,8 @@ RUN if [ -f artisan ]; then \
         php artisan config:cache || echo "config cache failed"; \
     fi
 RUN if [ -f artisan ]; then \
-        php artisan migrate || echo "migrate failed";|
+        php artisan migrate || echo "migrate failed"; \
+    fi
 
 
 # DO NOT run migrations during build; it's a runtime task (do it in console after deploy)
