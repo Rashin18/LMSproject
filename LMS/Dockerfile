@@ -33,7 +33,7 @@ RUN chmod -R 775 storage bootstrap/cache
 
 # Laravel setup (safe caching with fallback)
 RUN if [ -f artisan ]; then \
-        php artisan config:clear; \
+        php artisan config:clear || echo " cache failed"; \
     fi
 RUN if [ -f artisan ]; then \
         php artisan cache:clear || echo " cache failed"; \
@@ -50,6 +50,9 @@ RUN if [ -f artisan ]; then \
 RUN if [ -f artisan ]; then \
         php artisan config:cache || echo "config cache failed"; \
     fi
+RUN if [ -f artisan ]; then \
+        php artisan migrate || echo "migrate failed";|
+
 
 # DO NOT run migrations during build; it's a runtime task (do it in console after deploy)
 
